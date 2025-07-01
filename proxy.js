@@ -1,0 +1,31 @@
+import express from "express";
+import cors from "cors";
+import { createProxyMiddleware } from "http-proxy-middleware";
+
+const app = express();
+
+// CORS configuration for frontend localhost
+app.use(
+  cors({
+    origin: "http://localhost:3000",
+  })
+);
+
+// Proxy for public API
+app.use(
+  "/api",
+  createProxyMiddleware({
+    target: "https://api.igdb.com/v4", // IGDB API
+    changeOrigin: true,
+    pathRewrite: {
+      "^/api": "", // Delete the '/api'
+    },
+    onProxyRes: (proxyRes, req, res) => {
+      proxyRes.headers["Access-Control-Allow-Origin"] = "http://localhost:3000";
+    },
+  })
+);
+
+app.listen(5000, () => {
+  console.log("Proxy server started on port 5000");
+});
