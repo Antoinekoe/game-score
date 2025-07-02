@@ -1,0 +1,149 @@
+<%- include("partials/header.ejs") %>
+
+<section class="collection-container">
+  <div class="left-part">
+    <h2>My collection</h2>
+  </div>
+  <div class="right-part">
+    <%# Filter the data %>
+    <form action="/filter" method="post" id="filterForm">
+      <label for="filter">Filter by:</label>
+      <select name="filter" id="id">
+        <option value="newestToOldest" <% if(filter === 'newestToOldest') {%> selected <% }%>>Newest -> Oldest</option>
+        <option value="oldestToNewest" <% if(filter === 'oldestToNewest') {%> selected <% }%>>Oldest -> Newest</option>
+        <option value="bestNoteToWorstNote" <% if(filter === 'bestNoteToWorstNote') {%> selected <% }%>>Best note -> Worst note</option>
+        <option value="worstNoteToBestNote" <% if(filter === 'worstNoteToBestNote') {%> selected <% }%>>Worst note -> Best note</option>
+      </select>
+    </form>
+  </div>
+</section>
+<%# If no entries in DB, shows the add game %>
+<% if (isEntriesInDB === false) { %>
+<section class="addgame-container">
+  <i class='bxr bxs-play bx-lg' style='color:#3e00ff'></i>
+  <h2>No games added</h2>
+  <p>Start adding games you played to create your collection.</p>
+  <i class='bxr  bx-search' style='color:#3e00ff'></i>
+
+  <%# Choose the game to review%>
+  <form class="game-search" action="/chooseGame" method="post">
+    <input type="text" name="search" id="searchInput" autocomplete="off" autofocus="on" placeholder="Enter game name">
+    <input type="hidden" name="gameName" id="hiddenGameName">
+    <input type="hidden" name="gameId" id="hiddenGameId">
+    <input type="hidden" name="gameCover" id="hiddenGameCover">
+    <div class="dropdown">
+      <ul id="dropdownList">
+      </ul>
+    </div>
+  </form>
+  <%# If there are entries in DB, shows the entries %>
+  <% } else { %>
+  <section class="game-review-container">
+    <% resultDB.forEach(entry => { %>
+    <div class="game-review">
+      <img src="<%= entry.img %>">
+      <h3><%= entry.game_name %></h3>
+      <span><%= entry.note %>/5</span>
+      <form action="/edit/<%= entry.id %>" method="get" id="editForm">
+        <i class='bxr  bx-message-circle-edit' style='color:#3e00ff' id="edit"></i>
+      </form>
+      <form action="/delete/<%= entry.id %>" method="post" id="deleteForm">
+        <i class='bxr  bx-trash' style='color:#3e00ff' id="delete"></i>
+      </form>
+      <span><%= entry.description %></span>
+    </div>
+    <% }); %>
+  </section>
+  <% }; %>
+
+</section>
+
+<%- include("partials/footer.ejs") %>
+
+<script>
+  // If the value of filter changes, submit the form
+
+  document.getElementById('id').addEventListener('change', function() {
+    document.getElementById('filterForm').submit();
+  });
+
+  // Manage the entries in DB / no entries in db
+  // If you click on edit button, submit the "form" and you get redirect to edit the review
+
+  let idEdit = document.getElementById('edit');
+  let formEdit = document.getElementById('editForm');
+
+  if (idEdit && formEdit) {
+    idEdit.addEventListener('click', function() {
+      formEdit.submit();
+    });
+  }
+  let idDelete = document.getElementById('delete');
+  let formDelete = document.getElementById('deleteForm')
+
+  // Manage the entries in DB / no entries in db
+  // TODO
+  if (idDelete && formDelete) {
+    idDelete.addEventListener('click', function() {
+      formDelete.submit();
+    });
+  }
+
+  const searchInput = document.getElementById('searchInput');
+  const dropdownList = document.getElementById('dropdownList');
+  let debounceTimeout;
+
+
+  if (searchInput && dropdownList) {
+    // Delete the 'Enter' key on form submit
+    document.getElementById('searchInput').addEventListener('keydown', function(e) {
+      if (e.key === 'Enter') {
+        e.preventDefault();
+        return false;
+      }
+    });
+    // If click on a dropdown element, get the value from the list button, and attribute the value to hidden fields, and submit form
+    dropdownList.addEventListener('click', function(event) {
+      const li = event.target.closest('.list-button');
+      if (li) {
+        document.getElementById('hiddenGameName').value = li.dataset.name;
+        document.getElementById('hiddenGameId').value = li.dataset.id;
+        document.getElementById('hiddenGameCover').value = li.dataset.cover;
+        li.closest('form').submit();
+      }
+    });
+
+    // Create the request to the API, when the user inserts an input, after 400ms 
+
+    searchInput.addEventListener('input', async function() {
+      clearTimeout(debounceTimeout);
+      const query = this.value.trim();
+      if (!query) {
+        dropdownList.innerHTML = "";
+        return;
+      }
+
+      debounceTimeout = setTimeout(async () => {
+        // Send the POST request to /search
+        const response = await fetch('/search', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            search: query
+          })
+        });
+        const games = await response.json();
+
+        // Shows suggestions
+        dropdownList.innerHTML = games.map(game =>
+          `<li class="list-button" data-name="${game.name}" data-id="${game.id}" data-cover="${game.cover ? 'https:' + game.cover.url : ''}"> ${game.cover ? `<img src="https:${game.cover.url}">` : ''}${game.name}</li>`
+        ).join('');
+      }, 400);
+    });
+  }
+</script>
+</body>
+
+</html>

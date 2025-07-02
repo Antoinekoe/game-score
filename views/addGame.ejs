@@ -1,0 +1,29 @@
+<%- include("partials/header.ejs") %>
+
+
+
+<section class="addgame-container">
+  <h2>Ajouter un jeu</h2>
+  <img src="<%= gameCover %>">
+  <h3><%= gameName %></h3>
+
+  <form action="/addGame" method="post">
+    <label>Votre note</label>
+    <select id="selectNote" name="selectNote">
+      <option value="1">1</option>
+      <option value="2">2</option>
+      <option value="3">3</option>
+      <option value="4">4</option>
+      <option value="5">5</option>
+    </select>
+    <label>Votre avis</label>
+    <textarea id="commentaire" name="commentaire" maxlength="255"></textarea>
+    <button type="button" onclick='window.location.href="https://www.example.com"'><a href="/">Annuler</a></button>
+    <button type="submit">Enregistrer</button>
+
+  </form>
+</section>
+
+
+
+<%- include("partials/footer.ejs") %>

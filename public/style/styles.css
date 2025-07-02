@@ -1,0 +1,23 @@
+nav {
+  background-color: blue;
+  display: flex;
+  justify-content: space-between;
+}
+h1 {
+  margin: 0;
+  padding: 0;
+}
+
+nav > .left-part {
+  display: flex;
+}
+
+.collection-container {
+  display: flex;
+  justify-content: space-between;
+}
+
+.collection-container > .left-part > h2 {
+  margin: 0;
+  padding: 0;
+}
