@@ -26,10 +26,12 @@ const db = new pg.Client({
 });
 db.connect();
 
-let filter = null;
-let gameName = null;
-let gameCover = null;
-let isEntriesInDB = null;
+let filter = null; // Declare the filter that will be useful for the frontend to filter the field
+let gameName = null; // Declare the var that stores the gameName
+let gameCover = null; // Declare the var that stores the gameCover URL
+let gameDate = null; // Declare the var that stores the gameDate, in a readable format
+let isEntriesInDB = false; // Declaration if there are entries or not in the DB
+let filterContent = null; // Declare the var that will store the result of the DB filters
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
@@ -37,7 +39,14 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.get("/", async (req, res) => {
   // Home page linked to DB
   try {
-    const result = await db.query("SELECT * FROM noted_games");
+    let result;
+    if (filterContent !== null) {
+      result = filterContent;
+    } else {
+      result = await db.query(
+        "SELECT * FROM noted_games ORDER BY date_publication ASC"
+      );
+    }
     if (result.rows.length > 0) {
       isEntriesInDB = true;
       res.render("index.ejs", {
@@ -64,21 +73,25 @@ app.post("/filter", async (req, res) => {
         "SELECT * FROM noted_games ORDER BY date_publication DESC"
       );
       filter = "oldestToNewest";
+      filterContent = result;
     } else if (req.body.filter === "newestToOldest") {
       const result = await db.query(
         "SELECT * FROM noted_games ORDER BY date_publication ASC"
       );
       filter = "newestToOldest";
+      filterContent = result;
     } else if (req.body.filter === "bestNoteToWorstNote") {
       const result = await db.query(
         "SELECT * FROM noted_games ORDER BY note DESC"
       );
       filter = "bestNoteToWorstNote";
+      filterContent = result;
     } else if (req.body.filter === "worstNoteToBestNote") {
       const result = await db.query(
         "SELECT * FROM noted_games ORDER BY note ASC"
       );
       filter = "worstNoteToBestNote";
+      filterContent = result;
     }
     res.redirect("/");
   } catch (error) {
@@ -92,7 +105,7 @@ app.post("/search", async (req, res) => {
     const searchTerm = req.body.search;
     const igdbResponse = await igdbApi.post(
       "/games",
-      `search "${searchTerm}"; fields name, cover.url; where parent_game = null; limit 4;`
+      `search "${searchTerm}"; fields name, cover.url, first_release_date; where parent_game = null; limit 4;`
     );
     res.json(igdbResponse.data);
   } catch (error) {
@@ -103,11 +116,14 @@ app.post("/search", async (req, res) => {
 app.post("/chooseGame", async (req, res) => {
   // If a user click on a game, store the request
   try {
+    console.log(req.body);
     gameName = req.body.gameName;
     gameCover = req.body.gameCover;
+    gameDate = req.body.gameDate;
     res.render("addGame.ejs", {
       gameName: gameName,
       gameCover: gameCover,
+      gameDate: gameDate,
     });
   } catch (error) {
     console.error("Erreur:", error);
@@ -129,8 +145,8 @@ app.post("/addGame", async (req, res) => {
     let gameNote = req.body.selectNote;
     let gameComment = req.body.commentaire;
     const result = await db.query(
-      "INSERT INTO noted_games (game_name, note, description, img) VALUES ($1, $2, $3, $4)",
-      [gameName, gameNote, gameComment, gameCover]
+      "INSERT INTO noted_games (game_name, note, description, date_publication, img) VALUES ($1, $2, $3, $4, $5)",
+      [gameName, gameNote, gameComment, gameDate, gameCover]
     );
     res.redirect("/");
   } catch (error) {

@@ -3,16 +3,29 @@
 <section class="collection-container">
   <div class="left-part">
     <h2>My collection</h2>
+    <% if (isEntriesInDB === true) { %>
+    <form class="game-search" action="/chooseGame" method="post">
+      <input type="text" name="search" id="searchInput" autocomplete="off" autofocus="on" placeholder="Enter game name">
+      <input type="hidden" name="gameName" id="hiddenGameName">
+      <input type="hidden" name="gameId" id="hiddenGameId">
+      <input type="hidden" name="gameCover" id="hiddenGameCover">
+      <input type="hidden" name="gameDate" id="hiddenGameDate">
+      <div class="dropdownMenu">
+        <ul id="dropdownListMenu">
+        </ul>
+      </div>
+    </form>
+    <% } %>
   </div>
   <div class="right-part">
     <%# Filter the data %>
     <form action="/filter" method="post" id="filterForm">
       <label for="filter">Filter by:</label>
       <select name="filter" id="id">
-        <option value="newestToOldest" <% if(filter === 'newestToOldest') {%> selected <% }%>>Newest -> Oldest</option>
-        <option value="oldestToNewest" <% if(filter === 'oldestToNewest') {%> selected <% }%>>Oldest -> Newest</option>
-        <option value="bestNoteToWorstNote" <% if(filter === 'bestNoteToWorstNote') {%> selected <% }%>>Best note -> Worst note</option>
-        <option value="worstNoteToBestNote" <% if(filter === 'worstNoteToBestNote') {%> selected <% }%>>Worst note -> Best note</option>
+        <option value="newestToOldest" class="option-filter" <% if(filter === 'newestToOldest') {%> selected <% }%>>Newest -> Oldest</option>
+        <option value="oldestToNewest" class="option-filter" <% if(filter === 'oldestToNewest') {%> selected <% }%>>Oldest -> Newest</option>
+        <option value="bestNoteToWorstNote" class="option-filter" <% if(filter === 'bestNoteToWorstNote') {%> selected <% }%>>Best note -> Worst note</option>
+        <option value="worstNoteToBestNote" class="option-filter" <% if(filter === 'worstNoteToBestNote') {%> selected <% }%>>Worst note -> Best note</option>
       </select>
     </form>
   </div>
@@ -20,47 +33,52 @@
 <%# If no entries in DB, shows the add game %>
 <% if (isEntriesInDB === false) { %>
 <section class="addgame-container">
-  <i class='bxr bxs-play bx-lg' style='color:#3e00ff'></i>
+  <i class='bx  bxs-play bx-lg' style='color:#0EA5E9'></i>
   <h2>No games added</h2>
   <p>Start adding games you played to create your collection.</p>
-  <i class='bxr  bx-search' style='color:#3e00ff'></i>
+  <div class="search">
+    <i class='bxr  bx-search' style='color:#0EA5E9'></i>
 
-  <%# Choose the game to review%>
-  <form class="game-search" action="/chooseGame" method="post">
-    <input type="text" name="search" id="searchInput" autocomplete="off" autofocus="on" placeholder="Enter game name">
-    <input type="hidden" name="gameName" id="hiddenGameName">
-    <input type="hidden" name="gameId" id="hiddenGameId">
-    <input type="hidden" name="gameCover" id="hiddenGameCover">
-    <div class="dropdown">
-      <ul id="dropdownList">
-      </ul>
-    </div>
-  </form>
-  <%# If there are entries in DB, shows the entries %>
-  <% } else { %>
-  <section class="game-review-container">
-    <% resultDB.forEach(entry => { %>
-    <div class="game-review">
-      <img src="<%= entry.img %>">
-      <h3><%= entry.game_name %></h3>
-      <span><%= entry.note %>/5</span>
-      <form action="/edit/<%= entry.id %>" method="get" id="editForm">
-        <button type="submit" class="edit-button">
-          <i class='bxr  bx-message-circle-edit' style='color:#3e00ff' id="edit"></i>
-        </button>
-      </form>
-      <form action="/delete/<%= entry.id %>" method="post" id="deleteForm">
-        <button type="submit" class="delete-button">
-          <i class='bxr  bx-trash' style='color:#3e00ff' id="delete"></i>
-        </button>
-      </form>
-      <span><%= entry.description %></span>
-    </div>
-    <% }); %>
-  </section>
-  <% }; %>
-
+    <%# Choose the game to review%>
+    <form class="game-search" action="/chooseGame" method="post">
+      <input type="text" name="search" id="searchInput" autocomplete="off" autofocus="on" placeholder="Enter game name">
+      <input type="hidden" name="gameName" id="hiddenGameName">
+      <input type="hidden" name="gameId" id="hiddenGameId">
+      <input type="hidden" name="gameCover" id="hiddenGameCover">
+      <input type="hidden" name="gameDate" id="hiddenGameDate">
+      <div class="dropdown">
+        <ul id="dropdownList">
+        </ul>
+      </div>
+    </form>
+  </div>
 </section>
+<%# If there are entries in DB, shows the entries %>
+<% } else { %>
+<section class="game-review-container">
+  <% resultDB.forEach(entry => { %>
+  <div class="game-review">
+    <img src="<%= entry.img %>">
+    <h3><%= entry.game_name %></h3>
+    <span><%= entry.note %>/5</span>
+    <span>Released on <%= entry.date_publication %></span>
+    <form action="/edit/<%= entry.id %>" method="get" id="editForm">
+      <button type="submit" class="edit-button">
+        <i class='bxr  bx-message-circle-edit' style='color:#3e00ff' id="edit"></i>
+      </button>
+    </form>
+    <form action="/delete/<%= entry.id %>" method="post" id="deleteForm">
+      <button type="submit" class="delete-button">
+        <i class='bxr  bx-trash' style='color:#3e00ff' id="delete"></i>
+      </button>
+    </form>
+    <span><%= entry.description %></span>
+  </div>
+  <% }); %>
+</section>
+<% }; %>
+
+
 
 <%- include("partials/footer.ejs") %>
 
@@ -73,6 +91,7 @@
 
   const searchInput = document.getElementById('searchInput');
   const dropdownList = document.getElementById('dropdownList');
+  const dropdown = document.querySelector('.dropdown');
   let debounceTimeout;
 
 
@@ -86,11 +105,13 @@
     });
     // If click on a dropdown element, get the value from the list button, and attribute the value to hidden fields, and submit form
     dropdownList.addEventListener('click', function(event) {
+
       const li = event.target.closest('.list-button');
       if (li) {
         document.getElementById('hiddenGameName').value = li.dataset.name;
         document.getElementById('hiddenGameId').value = li.dataset.id;
         document.getElementById('hiddenGameCover').value = li.dataset.cover;
+        document.getElementById('hiddenGameDate').value = li.dataset.date;
         li.closest('form').submit();
       }
     });
@@ -102,6 +123,7 @@
       const query = this.value.trim();
       if (!query) {
         dropdownList.innerHTML = "";
+        dropdown.classList.remove('active');
         return;
       }
 
@@ -117,10 +139,14 @@
           })
         });
         const games = await response.json();
-
         // Shows suggestions
+        dropdown.classList.add('active');
         dropdownList.innerHTML = games.map(game =>
-          `<li class="list-button" data-name="${game.name}" data-id="${game.id}" data-cover="${game.cover ? 'https:' + game.cover.url : ''}"> ${game.cover ? `<img src="https:${game.cover.url}">` : ''}${game.name}</li>`
+          `<li class="list-button" data-date="${new Date(game.first_release_date * 1000).toLocaleDateString('en-US', {
+  month: 'long',
+  day: 'numeric',
+  year: 'numeric'
+})}"data-name="${game.name}" data-id="${game.id}" data-cover="${game.cover ? 'https:' + game.cover.url : ''}"> ${game.cover ? `<img src="https:${game.cover.url}">` : ''}<p>${game.name}</p></li>`
         ).join('');
       }, 400);
     });
