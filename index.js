@@ -141,8 +141,13 @@ app.post("/addGame", async (req, res) => {
 app.get("/edit/:id", async (req, res) => {
   // Shows the editGame page with the params sent from the button edit on home page
   try {
-    console.log(req.params);
-    res.render("editGame.ejs");
+    let idOfTheReview = req.params.id;
+    const result = await db.query("SELECT * FROM noted_games WHERE id=$1", [
+      idOfTheReview,
+    ]);
+    res.render("editGame.ejs", {
+      resultRows: result.rows,
+    });
   } catch (error) {
     console.error("Erreur:", error);
   }
@@ -151,7 +156,14 @@ app.get("/edit/:id", async (req, res) => {
 app.post("/edit/:id", async (req, res) => {
   // Modify the review in the DB and redirect to home page
   try {
-    res.redirect("/editGame");
+    let newNote = req.body.selectNote;
+    let newDescription = req.body.commentaire;
+    let idToSelect = req.params.id;
+    const result = await db.query(
+      "UPDATE noted_games SET note = $1, description = $2 WHERE id = $3",
+      [newNote, newDescription, idToSelect]
+    );
+    res.redirect("/");
   } catch (error) {
     console.error("Erreur:", error);
   }

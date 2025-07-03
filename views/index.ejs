@@ -45,10 +45,14 @@
       <h3><%= entry.game_name %></h3>
       <span><%= entry.note %>/5</span>
       <form action="/edit/<%= entry.id %>" method="get" id="editForm">
-        <i class='bxr  bx-message-circle-edit' style='color:#3e00ff' id="edit"></i>
+        <button type="submit" class="edit-button">
+          <i class='bxr  bx-message-circle-edit' style='color:#3e00ff' id="edit"></i>
+        </button>
       </form>
       <form action="/delete/<%= entry.id %>" method="post" id="deleteForm">
-        <i class='bxr  bx-trash' style='color:#3e00ff' id="delete"></i>
+        <button type="submit" class="delete-button">
+          <i class='bxr  bx-trash' style='color:#3e00ff' id="delete"></i>
+        </button>
       </form>
       <span><%= entry.description %></span>
     </div>
@@ -66,28 +70,6 @@
   document.getElementById('id').addEventListener('change', function() {
     document.getElementById('filterForm').submit();
   });
-
-  // Manage the entries in DB / no entries in db
-  // If you click on edit button, submit the "form" and you get redirect to edit the review
-
-  let idEdit = document.getElementById('edit');
-  let formEdit = document.getElementById('editForm');
-
-  if (idEdit && formEdit) {
-    idEdit.addEventListener('click', function() {
-      formEdit.submit();
-    });
-  }
-  let idDelete = document.getElementById('delete');
-  let formDelete = document.getElementById('deleteForm')
-
-  // Manage the entries in DB / no entries in db
-  // If you click on delete button, submit the "form" and you get redirect to the home page
-  if (idDelete && formDelete) {
-    idDelete.addEventListener('click', function() {
-      formDelete.submit();
-    });
-  }
 
   const searchInput = document.getElementById('searchInput');
   const dropdownList = document.getElementById('dropdownList');

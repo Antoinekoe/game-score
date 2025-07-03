@@ -1,3 +1,25 @@
 <%- include("partials/header.ejs") %>
 
+<section class="editgame-container">
+  <h2>Modify a review</h2>
+  <img src="<%= resultRows[0].img %>">
+  <h3><%= resultRows[0].game_name %></h3>
+
+  <form action="/edit/<%= resultRows[0].id %>" method="post">
+    <label>Votre note</label>
+    <select id="selectNote" name="selectNote">
+      <option value="1" <% if (resultRows[0].id === 1) {%> selected <% } %>>1</option>
+      <option value="2" <% if (resultRows[0].id === 2) {%> selected <% } %>>2</option>
+      <option value="3" <% if (resultRows[0].id === 3) {%> selected <% } %>>3</option>
+      <option value="4" <% if (resultRows[0].id === 4) {%> selected <% } %>>4</option>
+      <option value="5" <% if (resultRows[0].id === 5) {%> selected <% } %>>5</option>
+    </select>
+    <label>Votre avis</label>
+    <textarea id="commentaire" name="commentaire" maxlength="255"><%= resultRows[0].description %></textarea>
+    <button type="button" onclick='window.location.href="https://www.example.com"'><a href="/">Annuler</a></button>
+    <button type="submit">Enregistrer</button>
+
+  </form>
+</section>
+
 <%- include("partials/footer.ejs") %>
