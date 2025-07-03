@@ -29,7 +29,7 @@ db.connect();
 let filter = null;
 let gameName = null;
 let gameCover = null;
-let isEntriesInDB = false;
+let isEntriesInDB = null;
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
@@ -48,7 +48,7 @@ app.get("/", async (req, res) => {
     } else {
       res.render("index.ejs", {
         filter: filter,
-        isEntriesInDB: isEntriesInDB,
+        isEntriesInDB: false,
       });
     }
   } catch (error) {
@@ -157,9 +157,12 @@ app.post("/edit/:id", async (req, res) => {
   }
 });
 
-app.post("/deleteGame", async (req, res) => {
+app.post("/delete/:id", async (req, res) => {
   // Delete review on home page
   try {
+    const result = await db.query("DELETE FROM noted_games WHERE id=$1", [
+      req.params.id,
+    ]);
     res.redirect("/");
   } catch (error) {
     console.error("Erreur:", error);
