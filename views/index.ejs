@@ -4,17 +4,20 @@
   <div class="left-part">
     <h2>My collection</h2>
     <% if (isEntriesInDB === true) { %>
-    <form class="game-search" action="/chooseGame" method="post">
-      <input type="text" name="search" id="searchInput" autocomplete="off" autofocus="on" placeholder="Enter game name">
-      <input type="hidden" name="gameName" id="hiddenGameName">
-      <input type="hidden" name="gameId" id="hiddenGameId">
-      <input type="hidden" name="gameCover" id="hiddenGameCover">
-      <input type="hidden" name="gameDate" id="hiddenGameDate">
-      <div class="dropdownMenu">
-        <ul id="dropdownListMenu">
-        </ul>
-      </div>
-    </form>
+    <div class="search-menu">
+      <i class='bxr  bx-search' style='color:#0EA5E9'></i>
+      <form class="game-search-menu" action="/chooseGame" method="post">
+        <input type="text" name="search" id="searchInput" autocomplete="off" autofocus="on" placeholder="Enter game name">
+        <input type="hidden" name="gameName" id="hiddenGameName">
+        <input type="hidden" name="gameId" id="hiddenGameId">
+        <input type="hidden" name="gameCover" id="hiddenGameCover">
+        <input type="hidden" name="gameDate" id="hiddenGameDate">
+        <div class="dropdownMenu">
+          <ul id="dropdownListMenu">
+          </ul>
+        </div>
+      </form>
+    </div>
     <% } %>
   </div>
   <div class="right-part">
@@ -32,7 +35,7 @@
 </section>
 <%# If no entries in DB, shows the add game %>
 <% if (isEntriesInDB === false) { %>
-<section class="addgame-container">
+<section class="choosegame-container">
   <i class='bx  bxs-play bx-lg' style='color:#0EA5E9'></i>
   <h2>No games added</h2>
   <p>Start adding games you played to create your collection.</p>
@@ -90,8 +93,8 @@
   });
 
   const searchInput = document.getElementById('searchInput');
-  const dropdownList = document.getElementById('dropdownList');
-  const dropdown = document.querySelector('.dropdown');
+  const dropdownList = document.getElementById('dropdownList') || document.getElementById('dropdownListMenu');
+  const dropdown = document.querySelector('.dropdown') || document.querySelector('.dropdownMenu');
   let debounceTimeout;
 
 

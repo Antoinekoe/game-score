@@ -116,7 +116,6 @@ app.post("/search", async (req, res) => {
 app.post("/chooseGame", async (req, res) => {
   // If a user click on a game, store the request
   try {
-    console.log(req.body);
     gameName = req.body.gameName;
     gameCover = req.body.gameCover;
     gameDate = req.body.gameDate;

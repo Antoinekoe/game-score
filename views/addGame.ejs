@@ -3,12 +3,17 @@
 
 
 <section class="addgame-container">
-  <h2>Ajouter un jeu</h2>
-  <img src="<%= gameCover %>">
-  <h3><%= gameName %></h3>
-  <span>Released on <%= gameDate %></span>
-
-  <form action="/addGame" method="post">
+  <div class="addgame-title">
+    <h2>Ajouter un jeu</h2>
+  </div>
+  <div class="img-text-addgame">
+    <img src="<%= gameCover %>">
+    <div class="text-addgame">
+      <h3><%= gameName %></h3>
+      <span>Released on <%= gameDate %></span>
+    </div>
+  </div>
+  <form action="/addGame" method="post" class="form-add">
     <label>Votre note</label>
     <select id="selectNote" name="selectNote">
       <option value="1">1</option>
@@ -18,9 +23,11 @@
       <option value="5">5</option>
     </select>
     <label>Votre avis</label>
-    <textarea id="commentaire" name="commentaire" maxlength="255"></textarea>
-    <button type="button" onclick='window.location.href="https://www.example.com"'><a href="/">Annuler</a></button>
-    <button type="submit">Enregistrer</button>
+    <textarea id="commentaire" name="commentaire" maxlength="255" rows="7"></textarea>
+    <div class="form-button">
+      <button type="button" onclick='window.location.href="/"' class="cancel-button">Annuler</button>
+      <button type="submit" class="submit-button">Enregistrer</button>
+    </div>
 
   </form>
 </section>
