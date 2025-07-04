@@ -28,6 +28,9 @@
       <button type="button" onclick='window.location.href="/"' class="cancel-button">Annuler</button>
       <button type="submit" class="submit-button">Enregistrer</button>
     </div>
+    <% if(checkIfAlreadyIn === true) { %>
+    <span class="error-already-in-db">You already gave a review to the game !</span>
+    <% } %>
 
   </form>
 </section>

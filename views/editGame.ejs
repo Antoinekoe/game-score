@@ -1,11 +1,18 @@
 <%- include("partials/header.ejs") %>
 
-<section class="editgame-container">
-  <h2>Modify a review</h2>
-  <img src="<%= resultRows[0].img %>">
-  <h3><%= resultRows[0].game_name %></h3>
+<section class="addgame-container">
+  <div class="addgame-title">
+    <h2>Modify a review</h2>
+  </div>
+  <div class="img-text-addgame">
+    <img src="<%= resultRows[0].img %>">
+    <div class="text-addgame">
+      <h3><%= resultRows[0].game_name %></h3>
+      <span>Released on <%= resultRows[0].date_publication %></span>
+    </div>
+  </div>
 
-  <form action="/edit/<%= resultRows[0].id %>" method="post">
+  <form action="/edit/<%= resultRows[0].id %>" method="post" class="form-add">
     <label>Votre note</label>
     <select id="selectNote" name="selectNote">
       <option value="1" <% if (resultRows[0].note === 1) {%> selected <% } %>>1</option>
@@ -16,9 +23,10 @@
     </select>
     <label>Votre avis</label>
     <textarea id="commentaire" name="commentaire" maxlength="255"><%= resultRows[0].description %></textarea>
-    <button type="button" onclick='window.location.href="https://www.example.com"'><a href="/">Annuler</a></button>
-    <button type="submit">Enregistrer</button>
-
+    <div class="form-button">
+      <button type="button" onclick='window.location.href="/"' class="cancel-button">Annuler</button>
+      <button type="submit" class="submit-button">Enregistrer</button>
+    </div>
   </form>
 </section>
 

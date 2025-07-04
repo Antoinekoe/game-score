@@ -65,7 +65,7 @@ i > .bxr {
 }
 
 .left-part > h2 {
-  font-size: 1.3rem;
+  width: 100%;
 }
 
 .navbar > .left-part {
@@ -107,6 +107,14 @@ h1 {
   padding-right: 1rem;
 }
 
+.game-search-menu {
+  width: 20rem;
+}
+
+.game-search {
+  width: 100%;
+}
+
 #id {
   border-radius: 5px;
   border: 1px solid #e0e0e0;
@@ -129,6 +137,11 @@ h1 {
 
 .choosegame-container > h2 {
   color: #0ea5e9;
+  text-align: center;
+}
+
+.choosegame-container > p {
+  text-align: center;
 }
 
 .addgame-container {
@@ -246,13 +259,14 @@ h1 {
   border: 2px solid #0ea5e9;
   border-radius: 10px;
   padding: 5px 5px;
-  width: 20rem;
+  width: 100%;
 }
 #searchInputMenu {
   font-family: "Montserrat";
   border: none;
   outline: none;
   box-shadow: none;
+  width: 100%;
 }
 .dropdownMenu {
   border: none;
@@ -277,11 +291,16 @@ h1 {
   z-index: 1000;
 }
 
+#dropdownListMenu > .list-button > img {
+  max-width: 10%;
+}
+
 #searchInputChoose {
   font-family: "Montserrat";
   border: none;
   outline: none;
   box-shadow: none;
+  width: 100%;
 }
 .dropdownChoose {
   border: none;
@@ -300,6 +319,10 @@ h1 {
   padding: 0;
   margin: 0;
   z-index: 1000;
+}
+
+#dropdownListChoose > .list-button > img {
+  max-width: 20%;
 }
 
 .search {
@@ -328,6 +351,12 @@ h1 {
 }
 .list-button > p {
   padding-left: 5px;
+}
+
+.error-already-in-db {
+  color: red;
+  font-size: 0.8rem;
+  text-align: end;
 }
 
 .game-review-container {
@@ -618,4 +647,47 @@ footer {
   font-family: "Montserrat";
   border: 1px solid rgb(230, 226, 245);
   border-radius: 10px;
+}
+
+@media (max-width: 1084px) {
+  .choosegame-container {
+    width: 35%;
+  }
+}
+
+@media (max-width: 856px) {
+  .collection-container {
+    flex-direction: column;
+    height: 10vh;
+    padding: 1rem 0px;
+  }
+}
+
+@media (max-width: 602px) {
+  .navbar-container > .right-part {
+    display: none;
+  }
+  .navbar-container {
+    justify-content: center;
+  }
+  .footer-container {
+    flex-direction: column;
+    height: auto;
+  }
+}
+
+@media (max-width: 474px) {
+  #filterForm {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+  }
+  .collection-container > .left-part {
+    padding: 0;
+  }
+  .collection-container > .right-part {
+    padding: 0;
+    margin-top: 0.3rem;
+  }
 }

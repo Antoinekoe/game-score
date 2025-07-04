@@ -32,6 +32,7 @@ let gameCover = null; // Declare the var that stores the gameCover URL
 let gameDate = null; // Declare the var that stores the gameDate, in a readable format
 let isEntriesInDB = false; // Declaration if there are entries or not in the DB
 let filterContent = null; // Declare the var that will store the result of the DB filters
+let checkIfAlreadyIn = null;
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
@@ -44,7 +45,7 @@ app.get("/", async (req, res) => {
       result = filterContent;
     } else {
       result = await db.query(
-        "SELECT * FROM noted_games ORDER BY date_publication ASC"
+        "SELECT * FROM noted_games ORDER BY date_entry DESC"
       );
     }
     if (result.rows.length > 0) {
@@ -53,11 +54,13 @@ app.get("/", async (req, res) => {
         filter: filter,
         isEntriesInDB: true,
         resultDB: result.rows,
+        checkIfAlreadyIn: false,
       });
     } else {
       res.render("index.ejs", {
         filter: filter,
         isEntriesInDB: false,
+        checkIfAlreadyIn: false,
       });
     }
   } catch (error) {
@@ -105,7 +108,7 @@ app.post("/search", async (req, res) => {
     const searchTerm = req.body.search;
     const igdbResponse = await igdbApi.post(
       "/games",
-      `search "${searchTerm}"; fields name, cover.url, first_release_date; where parent_game = null; limit 4;`
+      `search "${searchTerm}"; fields name, cover.image_id, first_release_date; where parent_game = null; limit 4;`
     );
     res.json(igdbResponse.data);
   } catch (error) {
@@ -123,6 +126,7 @@ app.post("/chooseGame", async (req, res) => {
       gameName: gameName,
       gameCover: gameCover,
       gameDate: gameDate,
+      checkIfAlreadyIn: false,
     });
   } catch (error) {
     console.error("Erreur:", error);
@@ -141,15 +145,30 @@ app.get("/chooseGame", async (req, res) => {
 app.post("/addGame", async (req, res) => {
   // Add the game in the DB and redirect to home page
   try {
-    let dateEntry = new Date();
-    let gameNote = req.body.selectNote;
-    let gameComment = req.body.commentaire;
-    const result = await db.query(
-      "INSERT INTO noted_games (game_name, note, description, date_publication, img, date_entry) VALUES ($1, $2, $3, $4, $5, $6)",
-      [gameName, gameNote, gameComment, gameDate, gameCover, dateEntry]
+    const check = await db.query(
+      "SELECT * FROM noted_games WHERE game_name = $1",
+      [gameName]
     );
-    filterContent = null;
-    res.redirect("/");
+    if (check.rows.length > 0) {
+      checkIfAlreadyIn = true;
+      res.render("addGame.ejs", {
+        checkIfAlreadyIn: checkIfAlreadyIn,
+        gameName: gameName,
+        gameCover: gameCover,
+        gameDate: gameDate,
+      });
+    } else {
+      let dateEntry = new Date();
+      let gameNote = req.body.selectNote;
+      let gameComment = req.body.commentaire;
+      const result = await db.query(
+        "INSERT INTO noted_games (game_name, note, description, date_publication, img, date_entry) VALUES ($1, $2, $3, $4, $5, $6)",
+        [gameName, gameNote, gameComment, gameDate, gameCover, dateEntry]
+      );
+      filterContent = null;
+      checkIfAlreadyIn = false;
+      res.redirect("/");
+    }
   } catch (error) {
     console.error("Erreur:", error);
   }
