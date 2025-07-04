@@ -38,8 +38,8 @@ app.use(bodyParser.urlencoded({ extended: true }));
 
 app.get("/", async (req, res) => {
   // Home page linked to DB
+  let result;
   try {
-    let result;
     if (filterContent !== null) {
       result = filterContent;
     } else {
@@ -70,13 +70,13 @@ app.post("/filter", async (req, res) => {
   try {
     if (req.body.filter === "oldestToNewest") {
       const result = await db.query(
-        "SELECT * FROM noted_games ORDER BY date_publication DESC"
+        "SELECT * FROM noted_games ORDER BY date_entry ASC"
       );
       filter = "oldestToNewest";
       filterContent = result;
     } else if (req.body.filter === "newestToOldest") {
       const result = await db.query(
-        "SELECT * FROM noted_games ORDER BY date_publication ASC"
+        "SELECT * FROM noted_games ORDER BY date_entry DESC"
       );
       filter = "newestToOldest";
       filterContent = result;
@@ -141,12 +141,14 @@ app.get("/chooseGame", async (req, res) => {
 app.post("/addGame", async (req, res) => {
   // Add the game in the DB and redirect to home page
   try {
+    let dateEntry = new Date();
     let gameNote = req.body.selectNote;
     let gameComment = req.body.commentaire;
     const result = await db.query(
-      "INSERT INTO noted_games (game_name, note, description, date_publication, img) VALUES ($1, $2, $3, $4, $5)",
-      [gameName, gameNote, gameComment, gameDate, gameCover]
+      "INSERT INTO noted_games (game_name, note, description, date_publication, img, date_entry) VALUES ($1, $2, $3, $4, $5, $6)",
+      [gameName, gameNote, gameComment, gameDate, gameCover, dateEntry]
     );
+    filterContent = null;
     res.redirect("/");
   } catch (error) {
     console.error("Erreur:", error);
@@ -163,6 +165,7 @@ app.get("/edit/:id", async (req, res) => {
     res.render("editGame.ejs", {
       resultRows: result.rows,
     });
+    filterContent = null;
   } catch (error) {
     console.error("Erreur:", error);
   }
@@ -178,6 +181,7 @@ app.post("/edit/:id", async (req, res) => {
       "UPDATE noted_games SET note = $1, description = $2 WHERE id = $3",
       [newNote, newDescription, idToSelect]
     );
+    filterContent = null;
     res.redirect("/");
   } catch (error) {
     console.error("Erreur:", error);
@@ -190,6 +194,7 @@ app.post("/delete/:id", async (req, res) => {
     const result = await db.query("DELETE FROM noted_games WHERE id=$1", [
       req.params.id,
     ]);
+    filterContent = null;
     res.redirect("/");
   } catch (error) {
     console.error("Erreur:", error);

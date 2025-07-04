@@ -5,9 +5,9 @@
     <h2>My collection</h2>
     <% if (isEntriesInDB === true) { %>
     <div class="search-menu">
-      <i class='bxr  bx-search' style='color:#0EA5E9'></i>
+      <i class='bxr  bx-search' style='color:#2f19ac'></i>
       <form class="game-search-menu" action="/chooseGame" method="post">
-        <input type="text" name="search" id="searchInput" autocomplete="off" autofocus="on" placeholder="Enter game name">
+        <input type="text" name="search" id="searchInputMenu" autocomplete="off" autofocus="on" placeholder="Enter game name">
         <input type="hidden" name="gameName" id="hiddenGameName">
         <input type="hidden" name="gameId" id="hiddenGameId">
         <input type="hidden" name="gameCover" id="hiddenGameCover">
@@ -40,17 +40,17 @@
   <h2>No games added</h2>
   <p>Start adding games you played to create your collection.</p>
   <div class="search">
-    <i class='bxr  bx-search' style='color:#0EA5E9'></i>
+    <i class='bxr  bx-search' style='color:#757575'></i>
 
     <%# Choose the game to review%>
     <form class="game-search" action="/chooseGame" method="post">
-      <input type="text" name="search" id="searchInput" autocomplete="off" autofocus="on" placeholder="Enter game name">
+      <input type="text" name="search" id="searchInputChoose" autocomplete="off" autofocus="on" placeholder="Enter game name">
       <input type="hidden" name="gameName" id="hiddenGameName">
       <input type="hidden" name="gameId" id="hiddenGameId">
       <input type="hidden" name="gameCover" id="hiddenGameCover">
       <input type="hidden" name="gameDate" id="hiddenGameDate">
-      <div class="dropdown">
-        <ul id="dropdownList">
+      <div class="dropdownChoose">
+        <ul id="dropdownListChoose">
         </ul>
       </div>
     </form>
@@ -61,20 +61,37 @@
 <section class="game-review-container">
   <% resultDB.forEach(entry => { %>
   <div class="game-review">
-    <img src="<%= entry.img %>">
-    <h3><%= entry.game_name %></h3>
-    <span><%= entry.note %>/5</span>
-    <span>Released on <%= entry.date_publication %></span>
-    <form action="/edit/<%= entry.id %>" method="get" id="editForm">
-      <button type="submit" class="edit-button">
-        <i class='bxr  bx-message-circle-edit' style='color:#3e00ff' id="edit"></i>
-      </button>
-    </form>
-    <form action="/delete/<%= entry.id %>" method="post" id="deleteForm">
-      <button type="submit" class="delete-button">
-        <i class='bxr  bx-trash' style='color:#3e00ff' id="delete"></i>
-      </button>
-    </form>
+    <div class="top-game-review">
+      <img src="<%= entry.img %>">
+      <div class="info-game-review">
+        <h3><%= entry.game_name %></h3>
+        <div class="note-game-review">
+          <span>
+            <% for (let i = 1; i <= 5; i++) { %>
+            <% if (i <= entry.note) { %>
+            <i class='bx bxs-star' style='color:#FFD700'></i>
+            <% } else { %>
+            <i class='bx bx-star' style='color:#FFD700'></i>
+            <% } %>
+            <% } %>
+          </span>
+          <span class="note">(<%= entry.note %>/5)</span>
+        </div>
+        <span>Added on <%= new Date(entry.date_entry).toLocaleDateString('en-US', { day: 'numeric', month: 'long', year: 'numeric' }) %></span>
+      </div>
+      <form action="/edit/<%= entry.id %>" method="get" id="editForm">
+        <button type="submit" class="edit-button">
+
+          <i class='bxr  bxs-edit-alt bx-xs' style='color:#5053e6' id="edit"></i>
+        </button>
+      </form>
+      <form action="/delete/<%= entry.id %>" method="post" id="deleteForm">
+        <button type="submit" class="delete-button">
+          <i class='bxr  bxs-trash-alt bx-xs' style='color:#e45353' id="delete"></i>
+        </button>
+      </form>
+    </div>
+
     <span><%= entry.description %></span>
   </div>
   <% }); %>
@@ -92,15 +109,14 @@
     document.getElementById('filterForm').submit();
   });
 
-  const searchInput = document.getElementById('searchInput');
-  const dropdownList = document.getElementById('dropdownList') || document.getElementById('dropdownListMenu');
-  const dropdown = document.querySelector('.dropdown') || document.querySelector('.dropdownMenu');
+  const searchInput = document.getElementById('searchInputChoose') || document.getElementById('searchInputMenu');
+  const dropdownList = document.getElementById('dropdownListChoose') || document.getElementById('dropdownListMenu');
+  const dropdown = document.querySelector('.dropdownChoose') || document.querySelector('.dropdownMenu');
   let debounceTimeout;
-
 
   if (searchInput && dropdownList) {
     // Delete the 'Enter' key on form submit
-    document.getElementById('searchInput').addEventListener('keydown', function(e) {
+    searchInput.addEventListener('keydown', function(e) {
       if (e.key === 'Enter') {
         e.preventDefault();
         return false;

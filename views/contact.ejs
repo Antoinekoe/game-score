@@ -1,50 +1,57 @@
 <%- include("partials/header.ejs") %>
-<section>
+<section class="contact-us">
   <h2>Contact us</h2>
   <p> Do you have a question or a suggestion ? Do not hesitate to contact us by using the form below.</p>
 </section>
 
-<section>
+<section class="contact-container">
   <div class="info">
     <div class="info-cards">
-      <img src="">
+      <i class='bxr  bxs-envelope bx-md' style='color:#4C58F4'></i>
       <h3>Email</h3>
       <p>antoine.koe@gmail.com</p>
     </div>
     <div class="info-cards">
-      <img src="">
+      <i class='bxr  bxs-phone bx-md' style='color:#4C58F4'></i>
       <h3>Phone number</h3>
       <p>+33 6 35 52 19 53</p>
     </div>
     <div class="info-cards">
-      <img src="">
+      <i class='bxr  bxs-location-blank bx-md' style='color:#4C58F4'></i>
       <h3>Adress</h3>
       <p>123 avenue of Paris <br /> 75001 Paris, France</p>
     </div>
   </div>
   <div class="form-container">
-    <label for="name">Name</label>
-    <input type="text" name="name" id="name" placeholder="Your nom">
-
-    <label for="email">Email</label>
-    <input type="text" name="email" id="email" placeholder="your@email.com">
-
-    <label for="subject">Subject</label>
-    <input type="text" name="subject" id="subject" placeholder="Subject of your message...">
-
-    <label for="name">Name</label>
-    <textarea name="message" id="message" placeholder="Your message..."></textarea>
-
-    <label for="policy">I accept the confidentiality policy</label>
-    <input type="checkbox" name="policy" id="policy">
-    <button type="submit"><i class='bxr  bx-send' style='color:#3e00ff'></i> Send the message</button>
-
+    <div class="form-group">
+      <label for="name">Name</label>
+      <input type="text" name="name" id="name" placeholder="Your nom">
+    </div>
+    <div class="form-group">
+      <label for="email">Email</label>
+      <input type="text" name="email" id="email" placeholder="your@email.com">
+    </div>
+    <div class="form-group-subject">
+      <label for="subject">Subject</label>
+      <input type="text" name="subject" id="subject" placeholder="Subject of your message...">
+    </div>
+    <div class="form-group-message">
+      <label for="message">Message</label>
+      <textarea name="message" id="message" placeholder="Your message..." rows="10"></textarea>
+    </div>
+    <div class="form-group-checkbox">
+      <input type="checkbox" name="policy" id="policy">
+      <label for="policy">I accept the confidentiality policy</label>
+    </div>
+    <div class="form-group-submit">
+      <button type="submit"><i class='bxr  bxs-send bx-xs' style='color:#ffffff'></i> Send the message</button>
+    </div>
   </div>
 </section>
 
-<section>
+<section class="faq-container">
   <h3>Frequently asked questions</h3>
-  <div class="faq">
+  <div class="faq-cards-container">
     <div class="faq-cards">
       <h4>How can I add a game to my collection ?</h4>
       <p>To add a game, click on the dropdown list "Add a game" in the home page, then search for the game you want to add.</p>
