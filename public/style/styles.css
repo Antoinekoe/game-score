@@ -654,6 +654,216 @@ footer {
   gap: 2px;
 }
 
+/* ===== RESPONSIVE DESIGN ===== */
+@media (max-width: 293px) {
+  #searchInputMenu {
+    font-size: 0.7rem;
+  }
+}
+
+@media (max-width: 369px) {
+  #name {
+    width: 50%;
+  }
+}
+
+@media (max-width: 396px) {
+  .info-game-review > h3 {
+    text-align: center;
+  }
+  #id {
+    width: 80%;
+  }
+  .collection-container > .left-part {
+    width: 80%;
+  }
+  .collection-container > .left-part > h2 {
+    font-size: 1rem;
+    text-align: center;
+  }
+}
+
+@media (max-width: 439px) {
+  .top-game-review > img {
+    object-fit: contain;
+  }
+  .top-game-review {
+    flex-direction: column;
+  }
+  .info-game-review {
+    align-items: center;
+  }
+  .info-game-review > h3 {
+    text-align: center;
+  }
+}
+
+@media (max-width: 443px) {
+  .img-text-addgame {
+    flex-direction: column;
+  }
+  .img-text-addgame > img {
+    object-fit: contain;
+  }
+  .addgame-title {
+    text-align: center;
+    padding-left: 0px;
+  }
+  .addgame-title > h2 {
+    padding-left: 0px;
+  }
+  .text-addgame {
+    text-align: center;
+  }
+}
+
+@media (max-width: 474px) {
+  #filterForm {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+  }
+  .collection-container > .left-part {
+    padding: 0;
+  }
+  .collection-container > .right-part {
+    padding: 0;
+    margin-top: 0.3rem;
+  }
+}
+
+@media (max-width: 491px) {
+  .form-button {
+    flex-direction: column;
+  }
+}
+
+@media (max-width: 602px) {
+  .navbar-container > .right-part {
+    display: none;
+  }
+  .addgame-container {
+    margin: 2rem auto;
+  }
+  .navbar-container {
+    justify-content: center;
+  }
+  .footer-container {
+    flex-direction: column;
+    height: auto;
+    margin: 1rem auto;
+    text-align: center;
+  }
+  .gamescore-footer {
+    justify-content: center;
+  }
+  .contact-container {
+    flex-direction: column;
+  }
+  .info {
+    width: 100%;
+  }
+  .form-container {
+    padding: 0rem;
+    padding-top: 1rem;
+    margin: 0rem;
+    width: 100%;
+  }
+  .form-group {
+    padding: 0 1rem;
+    padding-right: 1rem;
+  }
+  .form-group-subject {
+    padding: 0 1rem;
+  }
+
+  .form-group-message {
+    padding: 0 1rem;
+  }
+
+  .form-group-checkbox {
+    padding: 0 1rem;
+  }
+
+  .form-group-submit {
+    padding: 0 1rem;
+    padding-bottom: 1rem;
+  }
+  .form-group-checkbox > label {
+    font-size: 0.8rem;
+  }
+}
+
+@media (max-width: 806px) {
+  .faq-cards-container {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 856px) {
+  .collection-container {
+    flex-direction: column;
+    height: 10vh;
+    padding: 1.5rem 0px;
+  }
+  .collection-container > .left-part {
+    padding-left: 0rem;
+  }
+  .choosegame-container {
+    width: 60%;
+  }
+  #filterForm > label {
+    font-size: 0.8rem;
+    text-align: center;
+  }
+}
+
+@media (max-width: 859px) {
+  .addgame-container {
+    width: 45%;
+  }
+}
+
+@media (max-width: 891px) {
+  .game-review-container {
+    grid-template-columns: 1fr;
+  }
+  .collection-container {
+    height: 13vh;
+  }
+  .collection-container > .right-part {
+    padding-right: 0rem;
+  }
+}
+
+@media (max-width: 939px) {
+  .form-container {
+    grid-template-columns: 1fr;
+  }
+  .form-group-subject {
+    grid-column: span 1;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .form-group-message {
+    grid-column: span 1;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .form-group-checkbox {
+    grid-column: span 1;
+  }
+
+  .form-group-submit {
+    grid-column: span 1;
+    justify-items: center;
+    align-items: center;
+  }
+}
+
 @media (max-width: 1084px) {
   .choosegame-container {
     width: 35%;

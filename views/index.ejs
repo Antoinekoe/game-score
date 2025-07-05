@@ -1,9 +1,12 @@
 <%- include("partials/header.ejs") %>
 
+<!-- ===== COLLECTION HEADER SECTION ===== -->
 <section class="collection-container">
+  <!-- Left side: Collection title and search -->
   <div class="left-part">
     <h2>My collection</h2>
     <% if (isEntriesInDB === true) { %>
+    <!-- Search menu for existing games -->
     <div class="search-menu">
       <i class='bxr  bx-search' style='color:#5454F1'></i>
       <form class="game-search-menu" action="/chooseGame" method="post">
@@ -20,8 +23,8 @@
     </div>
     <% } %>
   </div>
+  <!-- Right side: Filter options -->
   <div class="right-part">
-    <%# Filter the data %>
     <form action="/filter" method="post" id="filterForm">
       <label for="filter">
         Filter by:
@@ -35,16 +38,16 @@
     </form>
   </div>
 </section>
-<%# If no entries in DB, shows the add game %>
+
+<!-- ===== EMPTY STATE SECTION ===== -->
 <% if (isEntriesInDB === false) { %>
 <section class="choosegame-container">
   <i class='bx  bxs-play bx-lg' style='color:#5454F1'></i>
   <h2>No games added</h2>
   <p>Start adding games you played to create your collection.</p>
+  <!-- Search form for adding first game -->
   <div class="search">
     <i class='bxr  bx-search' style='color:#757575'></i>
-
-    <%# Choose the game to review%>
     <form class="game-search" action="/chooseGame" method="post">
       <input type="text" name="search" id="searchInputChoose" autocomplete="off" autofocus="on" maxlength="255" placeholder="Enter game name">
       <input type="hidden" name="gameName" id="hiddenGameName">
@@ -58,15 +61,19 @@
     </form>
   </div>
 </section>
-<%# If there are entries in DB, shows the entries %>
+
+<!-- ===== GAME COLLECTION SECTION ===== -->
 <% } else { %>
 <section class="game-review-container">
   <% resultDB.forEach(entry => { %>
+  <!-- Individual game review card -->
   <div class="game-review">
+    <!-- Game header with image, info, and action buttons -->
     <div class="top-game-review">
       <img src="<%= entry.img %>">
       <div class="info-game-review">
         <h3><%= entry.game_name %></h3>
+        <!-- Star rating display -->
         <div class="note-game-review">
           <span>
             <% for (let i = 1; i <= 5; i++) { %>
@@ -81,10 +88,10 @@
         </div>
         <span>Added on <%= new Date(entry.date_entry).toLocaleDateString('en-US', { day: 'numeric', month: 'long', year: 'numeric' }) %></span>
       </div>
+      <!-- Edit and delete buttons -->
       <div class="edit-delete-button">
         <form action="/edit/<%= entry.id %>" method="get" id="editForm">
           <button type="submit" class="edit-button">
-
             <i class='bxr  bxs-edit-alt bx-xs' style='color:#5454F1' id="edit"></i>
           </button>
         </form>
@@ -95,40 +102,39 @@
       </div>
       </form>
     </div>
-
+    <!-- Game review description -->
     <span><%= entry.description %></span>
   </div>
   <% }); %>
 </section>
 <% }; %>
 
-
-
 <%- include("partials/footer.ejs") %>
 
+<!-- ===== JAVASCRIPT FUNCTIONALITY ===== -->
 <script>
-  // If the value of filter changes, submit the form
-
+  // Auto-submit filter form when selection changes
   document.getElementById('id').addEventListener('change', function() {
     document.getElementById('filterForm').submit();
   });
 
+  // Get search elements (works for both empty state and existing games)
   const searchInput = document.getElementById('searchInputChoose') || document.getElementById('searchInputMenu');
   const dropdownList = document.getElementById('dropdownListChoose') || document.getElementById('dropdownListMenu');
   const dropdown = document.querySelector('.dropdownChoose') || document.querySelector('.dropdownMenu');
   let debounceTimeout;
 
   if (searchInput && dropdownList) {
-    // Delete the 'Enter' key on form submit
+    // Prevent form submission on Enter key
     searchInput.addEventListener('keydown', function(e) {
       if (e.key === 'Enter') {
         e.preventDefault();
         return false;
       }
     });
-    // If click on a dropdown element, get the value from the list button, and attribute the value to hidden fields, and submit form
-    dropdownList.addEventListener('click', function(event) {
 
+    // Handle dropdown item selection
+    dropdownList.addEventListener('click', function(event) {
       const li = event.target.closest('.list-button');
       if (li) {
         document.getElementById('hiddenGameName').value = li.dataset.name;
@@ -139,8 +145,7 @@
       }
     });
 
-    // Create the request to the API, when the user inserts an input, after 400ms 
-
+    // Debounced search API call
     searchInput.addEventListener('input', async function() {
       clearTimeout(debounceTimeout);
       const query = this.value.trim();
@@ -151,7 +156,7 @@
       }
 
       debounceTimeout = setTimeout(async () => {
-        // Send the POST request to /search
+        // Fetch game suggestions from API
         const response = await fetch('/search', {
           method: 'POST',
           headers: {
@@ -163,7 +168,7 @@
         });
         const games = await response.json();
         if (games.length > 0) {
-          // Shows suggestions
+          // Display search suggestions
           dropdown.classList.add('active');
           dropdownList.innerHTML = games.map(game =>
             `<li class="list-button" data-date="${new Date(game.first_release_date * 1000).toLocaleDateString('en-US', {

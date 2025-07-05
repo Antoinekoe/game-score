@@ -1,11 +1,13 @@
 <%- include("partials/header.ejs") %>
 
-
-
+<!-- ===== ADD GAME FORM ===== -->
 <section class="addgame-container">
+  <!-- Form title -->
   <div class="addgame-title">
     <h2>Add a game</h2>
   </div>
+
+  <!-- Game information display -->
   <div class="img-text-addgame">
     <img src="<%= gameCover %>">
     <div class="text-addgame">
@@ -13,7 +15,10 @@
       <span>Released on <%= gameDate %></span>
     </div>
   </div>
+
+  <!-- Add game form -->
   <form action="/addGame" method="post" class="form-add">
+    <!-- Rating selection -->
     <label>Your note</label>
     <select id="selectNote" name="selectNote">
       <option value="1">1</option>
@@ -22,19 +27,23 @@
       <option value="4">4</option>
       <option value="5">5</option>
     </select>
+
+    <!-- Review text area -->
     <label>Your review</label>
     <textarea id="commentaire" name="commentaire" maxlength="255" rows="7"></textarea>
+
+    <!-- Form action buttons -->
     <div class="form-button">
       <button type="button" onclick='window.location.href="/"' class="cancel-button">Cancel</button>
       <button type="submit" class="submit-button">Save</button>
     </div>
+
+    <!-- Error message for duplicate games -->
     <% if(checkIfAlreadyIn === true) { %>
     <span class="error-already-in-db">You already gave a review to the game !</span>
     <% } %>
 
   </form>
 </section>
-
-
 
 <%- include("partials/footer.ejs") %>

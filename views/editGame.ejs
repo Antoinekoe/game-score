@@ -1,9 +1,13 @@
 <%- include("partials/header.ejs") %>
 
+<!-- ===== EDIT GAME FORM ===== -->
 <section class="addgame-container">
+  <!-- Form title -->
   <div class="addgame-title">
     <h2>Modify a review</h2>
   </div>
+
+  <!-- Game information display -->
   <div class="img-text-addgame">
     <img src="<%= resultRows[0].img %>">
     <div class="text-addgame">
@@ -12,8 +16,10 @@
     </div>
   </div>
 
+  <!-- Edit form -->
   <form action="/edit/<%= resultRows[0].id %>" method="post" class="form-add">
-    <label>Votre note</label>
+    <!-- Rating selection -->
+    <label>Your note</label>
     <select id="selectNote" name="selectNote">
       <option value="1" <% if (resultRows[0].note === 1) {%> selected <% } %>>1</option>
       <option value="2" <% if (resultRows[0].note === 2) {%> selected <% } %>>2</option>
@@ -21,11 +27,15 @@
       <option value="4" <% if (resultRows[0].note === 4) {%> selected <% } %>>4</option>
       <option value="5" <% if (resultRows[0].note === 5) {%> selected <% } %>>5</option>
     </select>
-    <label>Votre avis</label>
+
+    <!-- Review text area -->
+    <label>Your review</label>
     <textarea id="commentaire" name="commentaire" maxlength="255"><%= resultRows[0].description %></textarea>
+
+    <!-- Form action buttons -->
     <div class="form-button">
-      <button type="button" onclick='window.location.href="/"' class="cancel-button">Annuler</button>
-      <button type="submit" class="submit-button">Enregistrer</button>
+      <button type="button" onclick='window.location.href="/"' class="cancel-button">Cancel</button>
+      <button type="submit" class="submit-button">Save</button>
     </div>
   </form>
 </section>

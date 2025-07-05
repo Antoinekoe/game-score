@@ -6,5 +6,6 @@ id SERIAL PRIMARY KEY,
 	note INTEGER CONSTRAINT check_limit CHECK (note >= 0 AND note <=5),
 	description VARCHAR(255),
 	date_publication DATE,
-	img VARCHAR(255)
+	img VARCHAR(255),
+	date_entry text
 )

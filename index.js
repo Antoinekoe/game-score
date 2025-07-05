@@ -5,18 +5,20 @@ import axios from "axios";
 
 const app = express();
 const port = 3000;
+
+// IGDB API configuration for game data retrieval
 const igdbApi = axios.create({
-  // Create the auth required to make a IGBD API request
   baseURL: "http://localhost:5000/api",
   headers: {
-    "Client-ID": "x696mg2de9d61sgz5f27b9z53gr8ly",
-    Authorization: "Bearer v2yt8qb3pq4kc6faivvcd3lqtkqkgh",
+    "Client-ID": "x696mg2de9d61sgz5f27b9z53gr8ly", // Your client ID
+    Authorization: "v2yt8qb3pq4kc6faivvcd3lqtkqkgh", // Your authorization
   },
 });
 
 app.use(express.static("public"));
 app.set("view engine", "ejs");
 
+// Database connection configuration
 const db = new pg.Client({
   user: "postgres",
   host: "localhost",
@@ -26,21 +28,23 @@ const db = new pg.Client({
 });
 db.connect();
 
-let filter = null; // Declare the filter that will be useful for the frontend to filter the field
-let gameName = null; // Declare the var that stores the gameName
-let gameCover = null; // Declare the var that stores the gameCover URL
-let gameDate = null; // Declare the var that stores the gameDate, in a readable format
-let isEntriesInDB = false; // Declaration if there are entries or not in the DB
-let filterContent = null; // Declare the var that will store the result of the DB filters
-let checkIfAlreadyIn = null;
+// Global state variables
+let filter = null; // Current active filter for the game list
+let gameName = null; // Selected game name for adding/editing
+let gameCover = null; // Selected game cover URL
+let gameDate = null; // Selected game release date
+let isEntriesInDB = false; // Flag indicating if database has entries
+let filterContent = null; // Cached filtered results
+let checkIfAlreadyIn = null; // Flag for duplicate game check
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
+// Home page - displays all games with optional filtering
 app.get("/", async (req, res) => {
-  // Home page linked to DB
   let result;
   try {
+    // Use cached filtered results if available, otherwise fetch from DB
     if (filterContent !== null) {
       result = filterContent;
     } else {
@@ -48,6 +52,8 @@ app.get("/", async (req, res) => {
         "SELECT * FROM noted_games ORDER BY date_entry DESC"
       );
     }
+
+    // Render page with appropriate data based on whether entries exist
     if (result.rows.length > 0) {
       isEntriesInDB = true;
       res.render("index.ejs", {
@@ -64,61 +70,66 @@ app.get("/", async (req, res) => {
       });
     }
   } catch (error) {
-    console.error("Erreur:", error);
+    console.error("Database query error:", error);
   }
 });
 
+// Handle filter requests and update cached results
 app.post("/filter", async (req, res) => {
-  // If a user click on a filter, request the DB to filter data
   try {
-    if (req.body.filter === "oldestToNewest") {
+    const filterType = req.body.filter;
+
+    // Apply different sorting based on filter type
+    if (filterType === "oldestToNewest") {
       const result = await db.query(
         "SELECT * FROM noted_games ORDER BY date_entry ASC"
       );
       filter = "oldestToNewest";
       filterContent = result;
-    } else if (req.body.filter === "newestToOldest") {
+    } else if (filterType === "newestToOldest") {
       const result = await db.query(
         "SELECT * FROM noted_games ORDER BY date_entry DESC"
       );
       filter = "newestToOldest";
       filterContent = result;
-    } else if (req.body.filter === "bestNoteToWorstNote") {
+    } else if (filterType === "bestNoteToWorstNote") {
       const result = await db.query(
         "SELECT * FROM noted_games ORDER BY note DESC"
       );
       filter = "bestNoteToWorstNote";
       filterContent = result;
-    } else if (req.body.filter === "worstNoteToBestNote") {
+    } else if (filterType === "worstNoteToBestNote") {
       const result = await db.query(
         "SELECT * FROM noted_games ORDER BY note ASC"
       );
-      filter = "worstNoteToBestNote";
+      filter = "worstNoteToWorstNote";
       filterContent = result;
     }
     res.redirect("/");
   } catch (error) {
-    console.error("Error:", error);
+    console.error("Filter error:", error);
   }
 });
 
+// Search games using IGDB API
 app.post("/search", async (req, res) => {
-  // Searching function
   try {
     const searchTerm = req.body.search;
+    // Query IGDB API for game data (name, cover, release date)
     const igdbResponse = await igdbApi.post(
       "/games",
       `search "${searchTerm}"; fields name, cover.image_id, first_release_date; where parent_game = null; limit 4;`
     );
     res.json(igdbResponse.data);
   } catch (error) {
-    console.error("Erreur de récupération des données de IGDB", error);
+    console.error("IGDB API error:", error);
   }
 });
 
+// Store selected game data and render add game form
 app.post("/chooseGame", async (req, res) => {
-  // If a user click on a game, store the request
   try {
+    // Store game details in global variables for form population
     gameName = req.body.gameName;
     gameCover = req.body.gameCover;
     gameDate = req.body.gameDate;
@@ -129,27 +140,30 @@ app.post("/chooseGame", async (req, res) => {
       checkIfAlreadyIn: false,
     });
   } catch (error) {
-    console.error("Erreur:", error);
+    console.error("Game selection error:", error);
   }
 });
 
+// Display add game form (GET request)
 app.get("/chooseGame", async (req, res) => {
-  // Shows the addGame page with the request
   try {
     res.render("addGame.ejs");
   } catch (error) {
-    console.error("Erreur:", error);
+    console.error("Add game page error:", error);
   }
 });
 
+// Add new game to database
 app.post("/addGame", async (req, res) => {
-  // Add the game in the DB and redirect to home page
   try {
+    // Check if game already exists in database
     const check = await db.query(
       "SELECT * FROM noted_games WHERE game_name = $1",
       [gameName]
     );
+
     if (check.rows.length > 0) {
+      // Game already exists - show error message
       checkIfAlreadyIn = true;
       res.render("addGame.ejs", {
         checkIfAlreadyIn: checkIfAlreadyIn,
@@ -158,77 +172,86 @@ app.post("/addGame", async (req, res) => {
         gameDate: gameDate,
       });
     } else {
+      // Insert new game into database
       let dateEntry = new Date();
       let gameNote = req.body.selectNote;
       let gameComment = req.body.commentaire;
+
       const result = await db.query(
         "INSERT INTO noted_games (game_name, note, description, date_publication, img, date_entry) VALUES ($1, $2, $3, $4, $5, $6)",
         [gameName, gameNote, gameComment, gameDate, gameCover, dateEntry]
       );
+
+      // Clear cached data and redirect to home
       filterContent = null;
       checkIfAlreadyIn = false;
       res.redirect("/");
     }
   } catch (error) {
-    console.error("Erreur:", error);
+    console.error("Add game error:", error);
   }
 });
 
+// Display edit form for specific game
 app.get("/edit/:id", async (req, res) => {
-  // Shows the editGame page with the params sent from the button edit on home page
   try {
     let idOfTheReview = req.params.id;
+    // Fetch game data for editing
     const result = await db.query("SELECT * FROM noted_games WHERE id=$1", [
       idOfTheReview,
     ]);
     res.render("editGame.ejs", {
       resultRows: result.rows,
     });
-    filterContent = null;
+    filterContent = null; // Clear cache to refresh home page
   } catch (error) {
-    console.error("Erreur:", error);
+    console.error("Edit page error:", error);
   }
 });
 
+// Update game review in database
 app.post("/edit/:id", async (req, res) => {
-  // Modify the review in the DB and redirect to home page
   try {
     let newNote = req.body.selectNote;
     let newDescription = req.body.commentaire;
     let idToSelect = req.params.id;
+
+    // Update game review
     const result = await db.query(
       "UPDATE noted_games SET note = $1, description = $2 WHERE id = $3",
       [newNote, newDescription, idToSelect]
     );
-    filterContent = null;
+
+    filterContent = null; // Clear cache to refresh home page
     res.redirect("/");
   } catch (error) {
-    console.error("Erreur:", error);
+    console.error("Update error:", error);
   }
 });
 
+// Delete game review from database
 app.post("/delete/:id", async (req, res) => {
-  // Delete review on home page
   try {
     const result = await db.query("DELETE FROM noted_games WHERE id=$1", [
       req.params.id,
     ]);
-    filterContent = null;
+    filterContent = null; // Clear cache to refresh home page
     res.redirect("/");
   } catch (error) {
-    console.error("Erreur:", error);
+    console.error("Delete error:", error);
   }
 });
 
+// Display contact page
 app.get("/contact", async (req, res) => {
-  // Shows the contact form
   try {
     res.render("contact.ejs");
   } catch (error) {
-    console.error("Erreur:", error);
+    console.error("Contact page error:", error);
   }
 });
 
+// Start server
 app.listen(port, () => {
   console.log(`Website is running at http://localhost:${port}`);
 });
