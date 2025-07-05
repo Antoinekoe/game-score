@@ -10,8 +10,8 @@ const port = 3000;
 const igdbApi = axios.create({
   baseURL: "http://localhost:5000/api",
   headers: {
-    "Client-ID": "x696mg2de9d61sgz5f27b9z53gr8ly", // Your client ID
-    Authorization: "v2yt8qb3pq4kc6faivvcd3lqtkqkgh", // Your authorization
+    "Client-ID": "", // Your client ID
+    Authorization: "", // Your authorization
   },
 });
 
@@ -23,7 +23,7 @@ const db = new pg.Client({
   user: "postgres",
   host: "localhost",
   database: "gamescore",
-  password: "2112Nono$", // PUT YOUR PASSWORD HERE
+  password: "", // PUT YOUR PASSWORD HERE
   port: 5432,
 });
 db.connect();
