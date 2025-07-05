@@ -25,7 +25,7 @@ app.use(
     },
     onProxyRes: (proxyRes, req, res) => {
       proxyRes.headers["Access-Control-Allow-Origin"] =
-        process.env.CORS_ORIGIN || "http://localhost:3000";
+        process.env.CORS_ORIGIN || "http://localhost:3000"; // The URL of the frontend
     },
   })
 );
