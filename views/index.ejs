@@ -5,7 +5,7 @@
     <h2>My collection</h2>
     <% if (isEntriesInDB === true) { %>
     <div class="search-menu">
-      <i class='bxr  bx-search' style='color:#2f19ac'></i>
+      <i class='bxr  bx-search' style='color:#5454F1'></i>
       <form class="game-search-menu" action="/chooseGame" method="post">
         <input type="text" name="search" id="searchInputMenu" autocomplete="off" autofocus="on" maxlength="255" placeholder="Enter game name">
         <input type="hidden" name="gameName" id="hiddenGameName">
@@ -23,7 +23,9 @@
   <div class="right-part">
     <%# Filter the data %>
     <form action="/filter" method="post" id="filterForm">
-      <label for="filter">Filter by:</label>
+      <label for="filter">
+        Filter by:
+      </label>
       <select name="filter" id="id">
         <option value="newestToOldest" class="option-filter" <% if(filter === 'newestToOldest') {%> selected <% }%>>Newest -> Oldest</option>
         <option value="oldestToNewest" class="option-filter" <% if(filter === 'oldestToNewest') {%> selected <% }%>>Oldest -> Newest</option>
@@ -36,7 +38,7 @@
 <%# If no entries in DB, shows the add game %>
 <% if (isEntriesInDB === false) { %>
 <section class="choosegame-container">
-  <i class='bx  bxs-play bx-lg' style='color:#0EA5E9'></i>
+  <i class='bx  bxs-play bx-lg' style='color:#5454F1'></i>
   <h2>No games added</h2>
   <p>Start adding games you played to create your collection.</p>
   <div class="search">
@@ -79,16 +81,18 @@
         </div>
         <span>Added on <%= new Date(entry.date_entry).toLocaleDateString('en-US', { day: 'numeric', month: 'long', year: 'numeric' }) %></span>
       </div>
-      <form action="/edit/<%= entry.id %>" method="get" id="editForm">
-        <button type="submit" class="edit-button">
+      <div class="edit-delete-button">
+        <form action="/edit/<%= entry.id %>" method="get" id="editForm">
+          <button type="submit" class="edit-button">
 
-          <i class='bxr  bxs-edit-alt bx-xs' style='color:#5053e6' id="edit"></i>
-        </button>
-      </form>
-      <form action="/delete/<%= entry.id %>" method="post" id="deleteForm">
-        <button type="submit" class="delete-button">
-          <i class='bxr  bxs-trash-alt bx-xs' style='color:#e45353' id="delete"></i>
-        </button>
+            <i class='bxr  bxs-edit-alt bx-xs' style='color:#5454F1' id="edit"></i>
+          </button>
+        </form>
+        <form action="/delete/<%= entry.id %>" method="post" id="deleteForm">
+          <button type="submit" class="delete-button">
+            <i class='bxr  bxs-trash-alt bx-xs' style='color:#e45353' id="delete"></i>
+          </button>
+      </div>
       </form>
     </div>
 

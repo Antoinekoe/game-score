@@ -4,7 +4,7 @@
 
 <section class="addgame-container">
   <div class="addgame-title">
-    <h2>Ajouter un jeu</h2>
+    <h2>Add a game</h2>
   </div>
   <div class="img-text-addgame">
     <img src="<%= gameCover %>">
@@ -14,7 +14,7 @@
     </div>
   </div>
   <form action="/addGame" method="post" class="form-add">
-    <label>Votre note</label>
+    <label>Your note</label>
     <select id="selectNote" name="selectNote">
       <option value="1">1</option>
       <option value="2">2</option>
@@ -22,11 +22,11 @@
       <option value="4">4</option>
       <option value="5">5</option>
     </select>
-    <label>Votre avis</label>
+    <label>Your review</label>
     <textarea id="commentaire" name="commentaire" maxlength="255" rows="7"></textarea>
     <div class="form-button">
-      <button type="button" onclick='window.location.href="/"' class="cancel-button">Annuler</button>
-      <button type="submit" class="submit-button">Enregistrer</button>
+      <button type="button" onclick='window.location.href="/"' class="cancel-button">Cancel</button>
+      <button type="submit" class="submit-button">Save</button>
     </div>
     <% if(checkIfAlreadyIn === true) { %>
     <span class="error-already-in-db">You already gave a review to the game !</span>
