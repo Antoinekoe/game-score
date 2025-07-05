@@ -2,16 +2,19 @@ import express from "express";
 import bodyParser from "body-parser";
 import pg from "pg";
 import axios from "axios";
+import dotenv from "dotenv";
+
+dotenv.config();
 
 const app = express();
-const port = 3000;
+const port = process.env.PORT || 3000;
 
 // IGDB API configuration for game data retrieval
 const igdbApi = axios.create({
-  baseURL: "http://localhost:5000/api",
+  baseURL: process.env.IGDB_PROXY_URL,
   headers: {
-    "Client-ID": "", // Your client ID
-    Authorization: "", // Your authorization
+    "Client-ID": process.env.IGDB_CLIENT_ID, // Your client ID
+    Authorization: "Bearer " + process.env.IGDB_AUTHORIZATION, // Your authorization
   },
 });
 
@@ -20,11 +23,8 @@ app.set("view engine", "ejs");
 
 // Database connection configuration
 const db = new pg.Client({
-  user: "postgres",
-  host: "localhost",
-  database: "gamescore",
-  password: "", // PUT YOUR PASSWORD HERE
-  port: 5432,
+  connectionString: process.env.DATABASE_URL,
+  ssl: { rejectUnauthorized: false },
 });
 db.connect();
 

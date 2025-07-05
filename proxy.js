@@ -1,13 +1,16 @@
 import express from "express";
 import cors from "cors";
 import { createProxyMiddleware } from "http-proxy-middleware";
+import dotenv from "dotenv";
+
+dotenv.config();
 
 const app = express();
 
 // CORS configuration for frontend localhost
 app.use(
   cors({
-    origin: "http://localhost:3000",
+    origin: process.env.CORS_ORIGIN || "http://localhost:3000", // Your main URL site
   })
 );
 
@@ -21,7 +24,8 @@ app.use(
       "^/api": "", // Delete the '/api'
     },
     onProxyRes: (proxyRes, req, res) => {
-      proxyRes.headers["Access-Control-Allow-Origin"] = "http://localhost:3000";
+      proxyRes.headers["Access-Control-Allow-Origin"] =
+        process.env.CORS_ORIGIN || "http://localhost:3000";
     },
   })
 );

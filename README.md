@@ -31,7 +31,7 @@ A web application for reviewing video games. Users can search for games using th
 - **Other:**
   - Git for version control
 
-## Installation
+## 🚀 Installation
 
 1. **Clone the repository:**
 
