@@ -14,7 +14,7 @@ const igdbApi = axios.create({
   baseURL: process.env.IGDB_PROXY_URL,
   headers: {
     "Client-ID": process.env.IGDB_CLIENT_ID, // Your client ID
-    Authorization: "Bearer " + process.env.IGDB_AUTHORIZATION, // Your authorization
+    Authorization: `Bearer ${process.env.IGDB_AUTHORIZATION}`, // Your authorization
   },
 });
 
