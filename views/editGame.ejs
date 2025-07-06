@@ -9,10 +9,16 @@
 
   <!-- Game information display -->
   <div class="img-text-addgame">
+    <% if (resultRows[0].img) { %>
     <img src="<%= resultRows[0].img %>">
+    <% } else { %>
+    <img src="/img/not-found.png">
+    <% } %>
     <div class="text-addgame">
       <h3><%= resultRows[0].game_name %></h3>
-      <span>Released on <%= resultRows[0].date_publication %></span>
+      <% if (resultRows[0].date_publication) { %>
+      <span>Released on <%= new Date(resultRows[0].date_publication).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' }) %></span>
+      <% } %>
     </div>
   </div>
 

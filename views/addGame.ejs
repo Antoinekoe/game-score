@@ -9,10 +9,16 @@
 
   <!-- Game information display -->
   <div class="img-text-addgame">
+    <% if (gameCover) { %>
     <img src="<%= gameCover %>">
+    <% } else { %>
+    <img src="/img/not-found.png">
+    <% } %>
     <div class="text-addgame">
       <h3><%= gameName %></h3>
-      <span>Released on <%= gameDate %></span>
+      <% if (!gameDate) { %>
+      <span>Released on <%= gameDate %>
+        <% } %>
     </div>
   </div>
 

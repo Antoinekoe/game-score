@@ -70,7 +70,11 @@
   <div class="game-review">
     <!-- Game header with image, info, and action buttons -->
     <div class="top-game-review">
+      <% if (entry.img) { %>
       <img src="<%= entry.img %>">
+      <% } else { %>
+      <img src="/img/not-found.png">
+      <% } %>
       <div class="info-game-review">
         <h3><%= entry.game_name %></h3>
         <!-- Star rating display -->

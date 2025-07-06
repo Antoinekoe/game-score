@@ -61,6 +61,7 @@ if (searchInput && dropdownList) {
       if (games.length > 0) {
         // Display search suggestions
         dropdown.classList.add("active");
+        console.log(games);
         dropdownList.innerHTML = games
           .map(
             (game) =>
@@ -71,7 +72,7 @@ if (searchInput && dropdownList) {
                 day: "numeric",
                 year: "numeric",
               })}"data-name="${game.name}" data-id="${game.id}" data-cover="${
-                game.cover.image_id
+                game.cover
                   ? "https://images.igdb.com/igdb/image/upload/t_720p/" +
                     game.cover.image_id +
                     ".jpg"
@@ -79,7 +80,7 @@ if (searchInput && dropdownList) {
               }"> ${
                 game.cover
                   ? `<img src="https://images.igdb.com/igdb/image/upload/t_720p/${game.cover.image_id}.jpg">`
-                  : ""
+                  : `<img src="/img/not-found.png">`
               }<p>${game.name}</p></li>`
           )
           .join("");

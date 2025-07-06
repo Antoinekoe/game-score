@@ -176,11 +176,19 @@ app.post("/addGame", async (req, res) => {
       let dateEntry = new Date();
       let gameNote = req.body.selectNote;
       let gameComment = req.body.commentaire;
-
-      const result = await db.query(
-        "INSERT INTO noted_games (game_name, note, description, date_publication, img, date_entry) VALUES ($1, $2, $3, $4, $5, $6)",
-        [gameName, gameNote, gameComment, gameDate, gameCover, dateEntry]
-      );
+      console.log(gameDate);
+      // If there are no release date
+      if (gameDate === "Invalid Date") {
+        const result = await db.query(
+          "INSERT INTO noted_games (game_name, note, description, img, date_entry) VALUES ($1, $2, $3, $4, $5)",
+          [gameName, gameNote, gameComment, gameCover, dateEntry]
+        );
+      } else {
+        const result = await db.query(
+          "INSERT INTO noted_games (game_name, note, description, date_publication, img, date_entry) VALUES ($1, $2, $3, $4, $5, $6)",
+          [gameName, gameNote, gameComment, gameDate, gameCover, dateEntry]
+        );
+      }
 
       // Clear cached data and redirect to home
       filterContent = null;
