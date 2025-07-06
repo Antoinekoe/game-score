@@ -398,6 +398,11 @@ h1 {
   display: flex;
   gap: 2px;
 }
+.stars-container {
+  display: flex;
+  gap: 5px;
+}
+
 .info-game-review {
   display: flex;
   flex-direction: column;
