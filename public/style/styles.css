@@ -375,6 +375,8 @@ h1 {
 .top-game-review > img {
   border-radius: 10px;
   height: 8rem;
+  width: 6rem;
+  object-fit: fill;
 }
 
 .game-review > span {
