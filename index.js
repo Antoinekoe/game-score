@@ -3,6 +3,7 @@ import bodyParser from "body-parser";
 import pg from "pg";
 import axios from "axios";
 import dotenv from "dotenv";
+import proxyApp from "./proxy.js";
 
 dotenv.config();
 
@@ -262,4 +263,9 @@ app.get("/contact", async (req, res) => {
 // Start server
 app.listen(port, () => {
   console.log(`Website is running at http://localhost:${port}`);
+});
+
+// Start proxy server on different port
+proxyApp.listen(5000, () => {
+  console.log("Proxy server started on port 5000");
 });

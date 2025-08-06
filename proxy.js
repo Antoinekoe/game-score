@@ -33,3 +33,5 @@ app.use(
 app.listen(5000, () => {
   console.log("Proxy server started on port 5000");
 });
+
+export default proxyApp;
