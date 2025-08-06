@@ -324,6 +324,15 @@ app.use(
         process.env.CORS_ORIGIN ||
         "https://game-score-production.up.railway.app";
     },
+    onError: (err, req, res) => {
+      console.error("Proxy error:", err);
+      res.status(500).json({
+        error: "Proxy error",
+        message: err.message,
+        url: req.url,
+      });
+    },
+    logLevel: "debug",
   })
 );
 
