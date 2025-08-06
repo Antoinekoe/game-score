@@ -1,21 +1,30 @@
 import express from "express";
 import bodyParser from "body-parser";
 import pg from "pg";
+import cors from "cors";
 import axios from "axios";
 import dotenv from "dotenv";
-import proxyApp from "./proxy.js";
+import { createProxyMiddleware } from "http-proxy-middleware";
 
 dotenv.config();
 
 const app = express();
 const port = process.env.PORT || 3000;
 
+// CORS configuration
+app.use(
+  cors({
+    origin:
+      process.env.CORS_ORIGIN || "https://game-score-production.up.railway.app",
+  })
+);
+
 // IGDB API configuration for game data retrieval
 const igdbApi = axios.create({
-  baseURL: process.env.IGDB_PROXY_URL,
+  baseURL: process.env.IGDB_PROXY_URL || "https://api.igdb.com/v4",
   headers: {
-    "Client-ID": process.env.IGDB_CLIENT_ID, // Your client ID
-    Authorization: `Bearer ${process.env.IGDB_AUTHORIZATION}`, // Your authorization
+    "Client-ID": process.env.IGDB_CLIENT_ID,
+    Authorization: `Bearer ${process.env.IGDB_AUTHORIZATION}`,
   },
 });
 
@@ -260,12 +269,24 @@ app.get("/contact", async (req, res) => {
   }
 });
 
-// Start server
-app.listen(port, () => {
-  console.log(`Website is running at http://localhost:${port}`);
-});
+// Add proxy middleware to main app
+app.use(
+  "/api",
+  createProxyMiddleware({
+    target: "https://api.igdb.com/v4",
+    changeOrigin: true,
+    pathRewrite: {
+      "^/api": "",
+    },
+    onProxyRes: (proxyRes, req, res) => {
+      proxyRes.headers["Access-Control-Allow-Origin"] =
+        process.env.CORS_ORIGIN ||
+        "https://game-score-production.up.railway.app";
+    },
+  })
+);
 
-// Start proxy server on different port
-proxyApp.listen(5000, () => {
-  console.log("Proxy server started on port 5000");
+// Start only the main server
+app.listen(port, () => {
+  console.log(`Website is running on port ${port}`);
 });
