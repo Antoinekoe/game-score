@@ -310,6 +310,23 @@ app.get("/contact", async (req, res) => {
   }
 });
 
+// Add a test route for the API
+app.get("/api/test", (req, res) => {
+  res.json({
+    message: "API proxy is working",
+    timestamp: new Date().toISOString(),
+  });
+});
+
+// Add error handling for uncaught exceptions
+process.on("uncaughtException", (err) => {
+  console.error("Uncaught Exception:", err);
+});
+
+process.on("unhandledRejection", (reason, promise) => {
+  console.error("Unhandled Rejection at:", promise, "reason:", reason);
+});
+
 // Add proxy middleware to main app
 app.use(
   "/api",
