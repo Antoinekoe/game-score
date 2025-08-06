@@ -31,12 +31,30 @@ const igdbApi = axios.create({
 app.use(express.static("public"));
 app.set("view engine", "ejs");
 
+console.log("DATABASE_URL:", process.env.DATABASE_URL ? "Set" : "Not set");
+console.log("Environment variables:", {
+  DATABASE_URL: process.env.DATABASE_URL ? "Present" : "Missing",
+  PORT: process.env.PORT,
+  NODE_ENV: process.env.NODE_ENV,
+});
+
 // Database connection configuration
 const db = new pg.Client({
   connectionString: process.env.DATABASE_URL,
   ssl: { rejectUnauthorized: false },
 });
-db.connect();
+db.connect()
+  .then(() => {
+    console.log("Successfully connected to PostgreSQL database");
+  })
+  .catch((err) => {
+    console.error("Database connection error:", err);
+    console.error(
+      "Attempted to connect to:",
+      process.env.DATABASE_URL || "No DATABASE_URL set"
+    );
+    process.exit(1);
+  });
 
 // Global state variables
 let filter = null; // Current active filter for the game list
