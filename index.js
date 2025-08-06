@@ -46,14 +46,37 @@ const db = new pg.Client({
 db.connect()
   .then(() => {
     console.log("Successfully connected to PostgreSQL database");
+
+    // Check if table exists
+    return db.query(`
+      SELECT EXISTS (
+        SELECT FROM information_schema.tables 
+        WHERE table_name = 'noted_games'
+      );
+    `);
+  })
+  .then((result) => {
+    console.log("Table exists:", result.rows[0].exists);
+    if (!result.rows[0].exists) {
+      console.log("Creating table...");
+      return db.query(`
+        CREATE TABLE noted_games (
+          id SERIAL PRIMARY KEY,
+          game_name VARCHAR(100) NOT NULL,
+          note INTEGER CONSTRAINT check_limit CHECK (note >= 0 AND note <=5),
+          description VARCHAR(255),
+          date_publication DATE,
+          img VARCHAR(255),
+          date_entry text
+        );
+      `);
+    }
+  })
+  .then(() => {
+    console.log("Database setup complete");
   })
   .catch((err) => {
-    console.error("Database connection error:", err);
-    console.error(
-      "Attempted to connect to:",
-      process.env.DATABASE_URL || "No DATABASE_URL set"
-    );
-    process.exit(1);
+    console.error("Database error:", err);
   });
 
 // Global state variables
