@@ -90,6 +90,10 @@ let checkIfAlreadyIn = null; // Flag for duplicate game check
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
+app.get("/favicon.ico", (req, res) => {
+  res.sendFile(getFaviconPath());
+});
+
 // Home page - displays all games with optional filtering
 app.get("/", async (req, res) => {
   let result;
