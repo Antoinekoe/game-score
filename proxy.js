@@ -10,7 +10,9 @@ const app = express();
 // CORS configuration for frontend localhost
 app.use(
   cors({
-    origin: process.env.CORS_ORIGIN || "http://localhost:3000", // Your main URL site
+    origin:
+      process.env.CORS_ORIGIN ||
+      "https://game-score-production.up.railway.app/", // Your main URL site
   })
 );
 
@@ -25,7 +27,8 @@ app.use(
     },
     onProxyRes: (proxyRes, req, res) => {
       proxyRes.headers["Access-Control-Allow-Origin"] =
-        process.env.CORS_ORIGIN || "http://localhost:3000"; // The URL of the frontend
+        process.env.CORS_ORIGIN ||
+        "https://game-score-production.up.railway.app/"; // The URL of the frontend
     },
   })
 );
