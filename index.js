@@ -4,6 +4,11 @@ import pg from "pg";
 import cors from "cors";
 import axios from "axios";
 import dotenv from "dotenv";
+import path from "path";
+
+function getFaviconPath() {
+  return path.join(process.cwd(), "public", "img", "gaming.png");
+}
 
 dotenv.config();
 
