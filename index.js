@@ -21,7 +21,7 @@ app.use(
 
 // IGDB API configuration for game data retrieval
 const igdbApi = axios.create({
-  baseURL: process.env.IGDB_PROXY_URL || "https://api.igdb.com/v4",
+  baseURL: "https://api.igdb.com/v4", // Direct call to IGDB
   headers: {
     "Client-ID": process.env.IGDB_CLIENT_ID,
     Authorization: `Bearer ${process.env.IGDB_AUTHORIZATION}`,
@@ -166,14 +166,22 @@ app.post("/filter", async (req, res) => {
 app.post("/search", async (req, res) => {
   try {
     const searchTerm = req.body.search;
+    console.log("Searching for:", searchTerm);
+
     // Query IGDB API for game data (name, cover, release date)
     const igdbResponse = await igdbApi.post(
       "/games",
       `search "${searchTerm}"; fields name, cover.image_id, first_release_date; where parent_game = null; limit 4;`
     );
+
+    console.log("IGDB response:", igdbResponse.data);
     res.json(igdbResponse.data);
   } catch (error) {
-    console.error("IGDB API error:", error);
+    console.error("IGDB API error:", error.response?.data || error.message);
+    res.status(500).json({
+      error: "IGDB API error",
+      message: error.response?.data || error.message,
+    });
   }
 });
 
@@ -310,11 +318,15 @@ app.get("/contact", async (req, res) => {
   }
 });
 
-// Add a test route for the API
-app.get("/api/test", (req, res) => {
+// Add a simple test route
+app.get("/test", (req, res) => {
   res.json({
-    message: "API proxy is working",
+    message: "App is working!",
     timestamp: new Date().toISOString(),
+    env: {
+      IGDB_CLIENT_ID: process.env.IGDB_CLIENT_ID ? "Set" : "Not set",
+      IGDB_AUTHORIZATION: process.env.IGDB_AUTHORIZATION ? "Set" : "Not set",
+    },
   });
 });
 
@@ -326,32 +338,6 @@ process.on("uncaughtException", (err) => {
 process.on("unhandledRejection", (reason, promise) => {
   console.error("Unhandled Rejection at:", promise, "reason:", reason);
 });
-
-// Add proxy middleware to main app
-app.use(
-  "/api",
-  createProxyMiddleware({
-    target: "https://api.igdb.com/v4",
-    changeOrigin: true,
-    pathRewrite: {
-      "^/api": "",
-    },
-    onProxyRes: (proxyRes, req, res) => {
-      proxyRes.headers["Access-Control-Allow-Origin"] =
-        process.env.CORS_ORIGIN ||
-        "https://game-score-production.up.railway.app";
-    },
-    onError: (err, req, res) => {
-      console.error("Proxy error:", err);
-      res.status(500).json({
-        error: "Proxy error",
-        message: err.message,
-        url: req.url,
-      });
-    },
-    logLevel: "debug",
-  })
-);
 
 // Start only the main server
 app.listen(port, () => {
